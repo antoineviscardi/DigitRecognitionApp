@@ -10,6 +10,12 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+/*
+ * This class is the drawing board that gives a user the ability to draw
+ * digits. It is a simple JFrame instance contained in a window and
+ * implementing a simple MouseListener that draws a circle at every position
+ * the mouse is dragged on inside the panel. 
+ */
 public class DrawingBoard extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
@@ -29,6 +35,8 @@ public class DrawingBoard extends JFrame {
 	}
 
 	private void init() {
+		getContentPane().add(new Label("Drag mouse to draw digit"), 
+				BorderLayout.SOUTH);
 		addWindowListener(
 				new WindowAdapter() {
 					@Override
@@ -36,8 +44,6 @@ public class DrawingBoard extends JFrame {
 						System.exit(0);
 					}
 				});
-		getContentPane().add(new Label("Drag mouse to draw digit"), 
-				BorderLayout.SOUTH);
 		addMouseMotionListener(
 				new MouseMotionAdapter() {
 					@Override
