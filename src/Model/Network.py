@@ -39,10 +39,10 @@ class Network:
         matrix w and a biases vector b.
         """ 
         for w, b in zip(self.weights, self.biases):
-             a = sigmoid(np.dot(w, a) + b)
+            a = sigmoid(np.dot(w, a) + b)
         return a
 
-    def output_cost(a, l):
+    def output_cost(self, a, l):
         """
         Returns the result of the cost function given an output vector a
         and the associated label vector l in the form of the one-hot encoding
@@ -51,13 +51,40 @@ class Network:
         """
         return mean_squared_error(a, l)
 
-    def train(train_set):
+    def train(self, train_set, epochs=1, batch_size=1, learning_rate=1):
         """
         Train the neural network using stochastic gradient descent.
         train_set takes the form of a list of tuples, each containing
         data and its associated label one-hot encoded.
         """
-        np.random.shuffle(train_set)
+        for i in range(epoch):
+            np.random.shuffle(train_set)
+            batches = [train_set[j:j+batch_size]
+                       for j in range(0, len(train_set), batch_size)]
+            for batch in batches:
+                self.feed_batch(batch, learning_rate)
+        print("Epoch {} completed.".format(i))
+
+    def feed_batch(self, batch, learning_rate):
+        """
+        Update the weights and biases according to the gradient descent using
+        back propagation, given a batch and a learning rate.
+        """
+
+    def back_propagation(self, x, y):
+        """
+        Return a tuple (grad_w, grad_b) representing the gradient of the cost
+        function for the weights and biases. grad_w and grad_b are lists of
+        arrays similar to self.weights and self.bisases.
+        """
+        z_list = []
+        a_list = []
+        for w, b in zip(self.weights, self.biases):
+            z = np.dot(w, a) + b
+            z_list.append(z)
+            a = sigmoid(z)
+            a_list.append(a)
+        
 
 
 def print_digit(digit):
