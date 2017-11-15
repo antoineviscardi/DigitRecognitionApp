@@ -126,3 +126,11 @@ class Network:
         Derivative of the sigmoid function.
         """
         return self.sigmoid(z)*(1-self.sigmoid(z))
+
+    def save(self, path):
+        np.savez(path, self.weights, self.biases)
+
+    def load(self, path):
+        f = np.load(path)
+        self.weights = f['arr_0']
+        self.biases = f['arr_1']
