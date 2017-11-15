@@ -38,7 +38,7 @@ class Network:
             a = self.sigmoid(np.dot(w, a) + b)
         return a
 
-    def train(self, train_set, epochs, batch_size, learning_rate):
+    def train(self, train_set, epochs, batch_size, learning_rate, test_set=None):
         """
         Train the neural network using stochastic gradient descent.
         train_set takes the form of a list of tuples, each containing
@@ -50,7 +50,11 @@ class Network:
                        for j in range(0, len(train_set), batch_size)]
             for batch in batches:
                 self.feed_batch(batch, learning_rate)
-            print("Epoch {} completed.".format(i))
+            if test_set:
+                print("Epoch {}: {} / {}".format(
+                    i, self.test(test_set), len(test_set)))
+            else:
+                print("Epoch {} completed".format(i))  
 
     def feed_batch(self, batch, learning_rate):
         """
@@ -65,10 +69,10 @@ class Network:
                       for new_w, delta_new_w in zip(grad_w, delta_grad_w)]
             grad_b = [new_b + delta_new_b
                       for new_b, delta_new_b in zip(grad_b, delta_grad_b)]
-            self.weights = [w-(learning_rate/len(batch))*new_w
-                            for w, new_w in zip(self.weights, grad_w)]
-            self.biases = [b-(learning_rate/len(batch))*new_b
-                           for b, new_b in zip(self.biases, grad_b)]
+        self.weights = [w-(learning_rate/len(batch))*new_w
+                        for w, new_w in zip(self.weights, grad_w)]
+        self.biases = [b-(learning_rate/len(batch))*new_b
+                       for b, new_b in zip(self.biases, grad_b)]
         
     def backpropagation(self, x, y):
         """
@@ -77,6 +81,8 @@ class Network:
         label y. grad_w and grad_b are lists of arrays similar to self.weights
         and self.bisases.
         """
+        grad_w = [np.zeros(w.shape) for w in self.weights]
+        grad_b = [np.zeros(b.shape) for b in self.biases] 
         # feed forward
         a = x
         a_list = [a]
@@ -88,15 +94,14 @@ class Network:
             a_list.append(a)
 
         # compute the gradient for weights and biases
-        grad_w = [np.zeros(w.shape) for w in self.weights]
-        grad_b = [np.zeros(b.shape) for b in self.biases] 
         delta = (self.cost_derivative(a_list[-1], y) *
                  self.sigmoid_derivative(z_list[-1]))
         grad_w[-1] = np.dot(delta, a_list[-2].transpose())
         grad_b[-1] = delta
         for L in range(2, len(self.dimensions)):
-            delta = (np.dot(self.sigmoid_derivative(z_list[-L]) *
-                            self.weights[-L+1].transpose(), delta))
+            z = z_list[-L]
+            sp = self.sigmoid_derivative(z)
+            delta = np.dot(self.weights[-L+1].transpose(), delta) * sp
             grad_w[-L] = np.dot(delta, a_list[-L-1].transpose())
             grad_b[-L] = delta
         return (grad_w, grad_b)
@@ -113,7 +118,7 @@ class Network:
         """
         Derivative of the cost function.
         """
-        return(2*(a-l))
+        return (a-l)
 
     def sigmoid(self, z):
         """
