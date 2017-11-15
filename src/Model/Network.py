@@ -42,20 +42,11 @@ class Network:
             a = sigmoid(np.dot(w, a) + b)
         return a
 
-    def output_cost(self, a, l):
-        """
-        Returns the result of the cost function given an output vector a
-        and the associated label vector l in the form of the one-hot encoding
-        of that label.
-        The cost function itself is a simple mean squared error
-        """
-        return mean_squared_error(a, l)
-
     def train(self, train_set, epochs=1, batch_size=1, learning_rate=1):
         """
         Train the neural network using stochastic gradient descent.
         train_set takes the form of a list of tuples, each containing
-        data and its associated label one-hot encoded.
+        data and its associated label.
         """
         for i in range(epoch):
             np.random.shuffle(train_set)
@@ -70,20 +61,76 @@ class Network:
         Update the weights and biases according to the gradient descent using
         back propagation, given a batch and a learning rate.
         """
-
+        grad_w = [np.zeros(w.shappe) for w in self.weights]
+        grad_b = [np.zeros(b.shape) for b in self.biases]
+        for x, y in batch:
+            delta_grad_w, delta_grad_b = self.backprop(x, y)
+            grad_w = [new_w delta_new_w
+                      for new_w, delta_new_w in zip(grad_w, delta_new_w)]
+            grad_b = [new_b delta_new_b
+                      for new_b, delta_new_b in zip(grad_b, delta_new_b)]
+            self.weights = [w-(learning_rate/len(batch))*new_w
+                            for w, new_w in zip(self.weights, grad_w)]
+            self.biases = [b-(learning_rate/len(batch))*new_b
+                           for b, new_b in zip(self.biases, grad_b)]
+        
     def back_propagation(self, x, y):
         """
         Return a tuple (grad_w, grad_b) representing the gradient of the cost
-        function for the weights and biases. grad_w and grad_b are lists of
-        arrays similar to self.weights and self.bisases.
+        function for the weights and biases given an input vector x and a
+        label y. grad_w and grad_b are lists of arrays similar to self.weights
+        and self.bisases.
         """
+        # feed forward
+        a = x
+        a_list = [a]
         z_list = []
-        a_list = []
         for w, b in zip(self.weights, self.biases):
             z = np.dot(w, a) + b
             z_list.append(z)
             a = sigmoid(z)
             a_list.append(a)
+
+        # compute the gradient for weights and biases
+        grad_w = [np.zeros(w.shappe) for w in self.weights]
+        grad_b = [np.zeros(b.shape) for b in self.biases] 
+        delta = sigmoid_derivative(z_list[-1]) * cost_derivative(a_list[-1], y)
+        grad_w[-1] = np.dot(delta, a_list[-2])
+        grad_b[-1] = delta
+        for L in range(2, len(self.dimensions)):
+            delta = (np.dot(self.weight[-L+1].transpose(), delta) *
+                     sigmoid_derivative(z_list[-L]))
+            grad_w[-L] = np.dot(delta, a_list[-L-1])
+            grad_b[-L] = delta
+        return (grad_w, grad_b)
+
+    def test(self, test_set):
+        """
+        Return the ratio of successful predictions over the test set's size.
+        """
+        predictions = [(np.argmax(self.feedforward(x)), y)
+                        for (x, y) in test_set]
+        return sum(int(x == y) for (x, y) in predictions) / len(test_set)
+
+    def cost_derivative(self, a, l):
+        """
+        Derivative of the cost function.
+        """
+        l_one_hot = np.zeros(a.size)
+        l_one_hot[l] = 1
+        return(2*(a-l))
+
+    def sigmoid(self, z):
+        """
+        Sigmoid functioin
+        """
+        return 1.0/(1.0+np.exp(-z))
+
+    def sigmoid_derivative(self, z):
+        """
+        Derivative of the sigmoid function.
+        """
+        return sigmoid(z)*(1-sigmoid(z))
         
 
 
@@ -120,4 +167,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
