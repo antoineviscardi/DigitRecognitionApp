@@ -31,7 +31,7 @@ class Network:
 
     def feed_forward(self, a):
         """
-        Return the ouput of the network givenan input vector a, a weigths
+        Return the ouput of the network given an input vector a, a weigths
         matrix w and a biases vector b.
         """ 
         for w, b in zip(self.weights, self.biases):
