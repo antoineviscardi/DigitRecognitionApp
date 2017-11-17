@@ -19,6 +19,10 @@ class Network:
         self.biases = [random.randn(i, 1) for i in dimensions[1:]]
         self.weights = [random.randn(dimensions[i], dimensions[i-1])
                         for i in range(1, len(dimensions))]
+        #If testing after each epoch, keep track of the best weights and biases
+        self.best_score = 0
+        self.best_weights = self.weights
+        self.best_biases = self.biases
 
     def __str__(self):
         return ("Network:" +
@@ -51,9 +55,15 @@ class Network:
             for batch in batches:
                 self.feed_batch(batch, learning_rate)
             if test_set:
+                score = self.test(test_set)
+                if score > self.best_score:
+                    self.best_weights = self. weights
+                    self.best_biases = self.biases
                 print("Epoch {}: {} / {}".format(
-                    i, self.test(test_set), len(test_set)))
+                    i, score, len(test_set)))
             else:
+                self.best_weights = self. weigths
+                self.best_biases = self.biases
                 print("Epoch {} completed".format(i))  
 
     def feed_batch(self, batch, learning_rate):
@@ -133,9 +143,13 @@ class Network:
         return self.sigmoid(z)*(1-self.sigmoid(z))
 
     def save(self, path):
-        np.savez(path, self.weights, self.biases)
+        np.savez(path, self.best_weights, self.best_biases)
 
     def load(self, path):
         f = np.load(path)
         self.weights = f['arr_0']
         self.biases = f['arr_1']
+        # redefine net dimensions
+        dimensions = (self.weights[0].shape[1])
+        dimensions += (i for i in len(self.biases[i]))
+        
