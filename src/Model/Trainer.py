@@ -35,9 +35,9 @@ def main():
     """Fetch and wrap the data, create a network, train it and save the best
     performing weights and biases"""
     train_set, test_set = fetch_wrap_data()
-##    network = Network([784, 50, 10])
-##    network.train(train_set, 30, 50, 3.0, test_set)
-##    network.save('net.npz')
+    network = Network([784, 50, 10])
+    network.train(train_set, 30, 50, 3.0, test_set)
+    network.save('net.npz')
 
 if __name__ == "__main__":
     main()
