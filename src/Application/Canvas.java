@@ -33,8 +33,8 @@ public class Canvas extends JComponent {
 	 * pixels is a convenient size since we can easily reduce the size to 38 by
 	 * 38 to create MNIST format images.
 	 */
-	private static final int WINDOW_SIZE = 380;
-	private static final int BRUSH_SIZE = 20;
+	private static final int WINDOW_SIZE = 280;
+	private static final int BRUSH_SIZE = 25 ;
 
 	// What we will draw our image on.
 	private BufferedImage bi;
@@ -120,7 +120,7 @@ public class Canvas extends JComponent {
 				 * scale it between 0 and 1.
 				 */
 				Color pixel = new Color(bi.getRGB(i, j));
-				data[i * width + j] = (float) ((255 - pixel.getRed()) / 255.0);
+				data[j * width + i] = (float) ((255 - pixel.getRed()) / 255.0);
 			}
 		}
 		return data;
