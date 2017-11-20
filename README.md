@@ -13,6 +13,34 @@ The application is a simple Swing based java application. I won't go into the de
 
 Coupled with the network, the application performed really poorly: it would recognized some digits bu only when well written in the center and even then it would make some big mistakes such as confusing a 1 for a 5. This is manly due to a lack of preprocessing of the images before they are fed to the network. Indeed, the images from the MNIST dataset all have a similar look and feel. Thus, in order to show better results, my application should apply some filters to the drawn image to make it look as similar as possible to an MNIST image before feeding it to the Network.
 
-## Conclusion
+## Possible Improvements
+The biggest improvement that could be made is to add preprocessing capabilities in order to make the images drawn by the user as similiar as possible to the images from the MNIST dataset used to train the network.
+
+From a software point of view, it would be ideal to have the network run on separate thread so that the application would not have to create and initialize a Network object before each evaluation. 
+
+
+## Files Description
+- Application
+  - `Canvas.java`
+
+    This is the class responsible for the canvas on which the user draws. It offers an interface to easily acces the image in a format       that can be fed to the network.
+
+  - `DigitDrawingApp.java`
+  
+    Main class of the application. It creates the JFrame element, displays the text, buttons and canvas, fetch the image, feed it to the     network and displays the result.
+  
+- Model
+  - `JavaUtils.py`
+    
+    Offers a script that can be run by `DigitDrawingApp` to feed an image to the network and get the result back.
+    
+  - `Network.py`
+  
+    The implementation of the `Network` class as described earlier.
+  
+  - `Trainer.py`
+  
+    Script that fetches the MNIST dataset, creates a `Network`, trains it and save its weights and biases.
+  
 
 ## References
