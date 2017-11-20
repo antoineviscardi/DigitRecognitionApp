@@ -139,3 +139,4 @@ class Network:
         f = np.load(path)
         self.weights = f['arr_0']
         self.biases = f['arr_1']
+        

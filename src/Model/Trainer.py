@@ -10,7 +10,7 @@ def print_digit(digit):
     plt.imshow(digit.reshape(28,28),
                cmap=matplotlib.cm.binary,
                interpolation='nearest')
-    plt.axis('off')
+    #plt.axis('off')
     plt.show()
 
 def vectorize_label(j):
